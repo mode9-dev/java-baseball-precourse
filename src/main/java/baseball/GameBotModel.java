@@ -2,62 +2,133 @@ package baseball;
 
 import camp.nextstep.edu.missionutils.Randoms;
 
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class GameBotModel {
     private static final GameBotModel instance = new GameBotModel();
-    private static HashSet<Integer> answer;
-    private static boolean completed = false;
+    private BaseballAnswer answer;
+    private boolean completed = false;
+    private GameBotModel() {
+        this.initialize();
+    }
 
-    public HashSet<Integer> getAnswer() {
+    public BaseballAnswer getAnswer() {
         return answer;
+    }
+
+    public void setAnswer(BaseballAnswer answer) {
+        this.answer = answer;
     }
 
     public static GameBotModel getInstance() {
         return instance;
     }
 
-    public void initialize() {
-
-    }
-
     public boolean isCompleted() {
         return completed;
     }
 
-    public static void setAnswer(HashSet<Integer> answer) {
-        GameBotModel.answer = answer;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
-    private int generateUniqueNumber() {
+    public void initialize() {
+        this.setCompleted(false);
+        this.setAnswer(new BaseballAnswer());
+    }
+
+    public Result[] checkAnswer(int[] input) {
+        return this.getAnswer().calcResult(input);
+    }
+}
+
+class BaseballAnswer {
+    private int[] answer = new int[Config.GAME_COUNT];
+    private boolean[] memo = new boolean[Config.MAX_NUM + 1];
+
+    BaseballAnswer() {
+        this.setAnswer(generateRandomDistinctIntArray());
+        this.setMemo(this.generateMemoFrom(this.getAnswer()));
+    }
+
+    public int[] getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(int[] answer) {
+        this.answer = answer;
+    }
+
+    public boolean[] getMemo() {
+        return memo;
+    }
+
+    public void setMemo(boolean[] memo) {
+        this.memo = memo;
+    }
+
+    private static int getUniqueNumberNotIn(int[] arr) {
         /*
         @param container 이 해시셋에 없는 정수 값을 생성합니다.
 
         @return 해시셋에 포함되지 않으면서 1~9 범위의 정수를 반환합니다.
          */
-        int num = Randoms.pickNumberInRange(1, 9);
-        while (answer.contains(num)) {
-            num = Randoms.pickNumberInRange(1, 9);
+        int num = Randoms.pickNumberInRange(Config.MIN_NUM, Config.MAX_NUM);
+        if (IntStream.of(arr).anyMatch(x -> x == num)) {
+            return getUniqueNumberNotIn(arr);
         }
         return num;
     }
 
-    public void generateRandomDistinctAnswer() {
+    public static int[] generateRandomDistinctIntArray() {
         /*
         1~9 범위의 서로 다른 정수 3개를 포함하는 배열을 반환합니다.
 
-        @return HashSet<Integer>(3) 호출마다 항상 랜덤한 원소로 구성됩니다.
+        @return int[](3) 호출마다 항상 랜덤한 원소로 구성됩니다.
          */
 
-        HashSet<Integer> newSet = new HashSet<>(3);
+        int[] result = new int[Config.GAME_COUNT];
 
-        newSet.add(this.generateUniqueNumber());
-        newSet.add(this.generateUniqueNumber());
-        newSet.add(this.generateUniqueNumber());
-        setAnswer(newSet);
+        for (int i = 0; i < Config.GAME_COUNT; i++) {
+            result[i] = getUniqueNumberNotIn(result);
+        }
+        return result;
     }
 
-    public Result[] checkAnswer(int[] input) {
-        return new Result[]{Result.STRIKE, Result.STRIKE, Result.STRIKE};
+    private boolean[] generateMemoFrom(int[] arrNums) {
+        boolean[] memo = new boolean[Config.MAX_NUM + 1];
+        Arrays.fill(memo, false);
+
+        for (int num : arrNums) {
+            memo[num] = true;
+        }
+        return memo;
+    }
+
+    public boolean isBall(int num) {
+        boolean[] memo = this.getMemo();
+        return memo[num];
+    }
+
+    public boolean isStrike(int index, int num) {
+        return this.getAnswer()[index] == num;
+    }
+
+    private Result getRowResult(int index, int num) {
+        if (this.isStrike(index, num)) {
+            return Result.STRIKE;
+        } else if (this.isBall(num)) {
+            return Result.BALL;
+        }
+        return Result.NOTHING;
+    }
+
+    public Result[] calcResult(int[] input) {
+        Result[] result = new Result[Config.GAME_COUNT];
+        for (int i = 0; i < Config.GAME_COUNT; i++) {
+            result[i] = this.getRowResult(i, input[i]);
+        }
+        return result;
     }
 }

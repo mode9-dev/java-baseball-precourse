@@ -8,8 +8,8 @@ public class GameConsoleView {
     public static int[] resultsToStrikeBallCountArray(Result[] results) {
         int[] resultArray = new int[2];
         for (int i = 0; i < results.length; i++) {
-            resultArray[0] = boolToInt(results[i] == Result.BALL);
-            resultArray[1] = boolToInt(results[i] == Result.STRIKE);
+            resultArray[0] += boolToInt(results[i] == Result.BALL);
+            resultArray[1] += boolToInt(results[i] == Result.STRIKE);
         }
         return resultArray;
     }
@@ -27,6 +27,7 @@ public class GameConsoleView {
     }
 
     public static void printInputResult(Result[] results) {
+        String resultString = "";
         int[] countArray = resultsToStrikeBallCountArray(results);
         int ballCount = countArray[0];
         int strikeCount = countArray[1];
@@ -34,12 +35,13 @@ public class GameConsoleView {
             System.out.println("낫싱");
             return;
         }
-        String resultString = String.format("%1$d 볼 %2$d 스트라이크", ballCount, strikeCount).trim();
-        System.out.printf(resultString);
+        resultString += ballCount > 0 ? String.format("%d볼", ballCount) : "";
+        resultString += strikeCount > 0 ? String.format(" %d스트라이크", strikeCount) : "";
+        System.out.println(resultString.trim());
     }
 
     public static void printSuccessMessage() {
-        System.out.printf("%d개의 숫자를 모두 맞히셨습니다! 게임 종료", Config.GAME_COUNT);
+        System.out.printf("%d개의 숫자를 모두 맞히셨습니다! 게임 종료\n", Config.GAME_COUNT);
     }
 
     public static void printContinueAskInput() {
