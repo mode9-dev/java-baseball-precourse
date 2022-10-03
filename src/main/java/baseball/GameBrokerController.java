@@ -28,7 +28,7 @@ public class GameBrokerController {
         return result;
     }
 
-    public String[] run(String input) {
+    public Result[] run(String input) {
         if (!this.isValidInput(input)) {
             throw new IllegalArgumentException("유효하지 않은 입력값입니다. 프로그램을 종료합니다");
         }
@@ -39,6 +39,16 @@ public class GameBrokerController {
             bot.initialize();
         }
         return bot.checkAnswer(userInputArray);
+    }
+
+    public boolean willContinue(String s) {
+        Pattern pattern = Pattern.compile("^[1-9]$");
+        boolean isValidInput = pattern.matcher(s).matches();
+        int option = Integer.parseInt(s);
+        if (!isValidInput || (option != 1 && option != 2)) {
+            throw new IllegalArgumentException("유효하지 않은 입력값입니다. 프로그램을 종료합니다.");
+        }
+        return option == 1;
     }
 
 }

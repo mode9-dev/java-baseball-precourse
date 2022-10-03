@@ -57,7 +57,7 @@ public class GameBotModel {
         setAnswer(newSet);
     }
 
-    public String[] checkAnswer(int[] input) {
-        return new String[]{"foo", "bar", "baz"};
+    public Result[] checkAnswer(int[] input) {
+        return new Result[]{Result.STRIKE, Result.STRIKE, Result.STRIKE};
     }
 }
