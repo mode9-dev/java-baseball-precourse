@@ -5,10 +5,24 @@ import camp.nextstep.edu.missionutils.Randoms;
 import java.util.HashSet;
 
 public class GameBotModel {
+    private static final GameBotModel instance = new GameBotModel();
     private static HashSet<Integer> answer;
+    private static boolean completed = false;
 
     public HashSet<Integer> getAnswer() {
         return answer;
+    }
+
+    public static GameBotModel getInstance() {
+        return instance;
+    }
+
+    public void initialize() {
+
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 
     public static void setAnswer(HashSet<Integer> answer) {
@@ -41,5 +55,9 @@ public class GameBotModel {
         newSet.add(this.generateUniqueNumber());
         newSet.add(this.generateUniqueNumber());
         setAnswer(newSet);
+    }
+
+    public String[] checkAnswer(int[] input) {
+        return new String[]{"foo", "bar", "baz"};
     }
 }
