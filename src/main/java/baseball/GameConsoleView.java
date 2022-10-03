@@ -5,11 +5,11 @@ public class GameConsoleView {
         return bool ? 1 : 0;
     }
 
-    public static int[] resultsToStrikeBallCountArray(Result[] results) {
+    public static int[] resultsToStrikeBallCountArray(GameResult[] gameResults) {
         int[] resultArray = new int[2];
-        for (int i = 0; i < results.length; i++) {
-            resultArray[0] += boolToInt(results[i] == Result.BALL);
-            resultArray[1] += boolToInt(results[i] == Result.STRIKE);
+        for (GameResult gameResult : gameResults) {
+            resultArray[0] += boolToInt(gameResult == GameResult.BALL);
+            resultArray[1] += boolToInt(gameResult == GameResult.STRIKE);
         }
         return resultArray;
     }
@@ -20,15 +20,15 @@ public class GameConsoleView {
 
     public static int sum(int[] arr) {
         int result = 0;
-        for (int i = 0; i < arr.length; i++) {
-            result += arr[i];
+        for (int j : arr) {
+            result += j;
         }
         return result;
     }
 
-    public static void printInputResult(Result[] results) {
+    public static void printInputResult(GameResult[] gameResults) {
         String resultString = "";
-        int[] countArray = resultsToStrikeBallCountArray(results);
+        int[] countArray = resultsToStrikeBallCountArray(gameResults);
         int ballCount = countArray[0];
         int strikeCount = countArray[1];
         if (sum(countArray) == 0) {

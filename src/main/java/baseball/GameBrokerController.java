@@ -28,7 +28,7 @@ public class GameBrokerController {
         return result;
     }
 
-    public Result[] run(String input) {
+    public GameResult[] run(String input) {
         if (!this.isValidInput(input)) {
             throw new IllegalArgumentException("유효하지 않은 입력값입니다. 프로그램을 종료합니다");
         }

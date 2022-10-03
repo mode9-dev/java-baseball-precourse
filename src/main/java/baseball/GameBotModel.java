@@ -3,7 +3,6 @@ package baseball;
 import camp.nextstep.edu.missionutils.Randoms;
 
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
 public class GameBotModel {
     private static final GameBotModel instance = new GameBotModel();
@@ -38,7 +37,7 @@ public class GameBotModel {
         this.setAnswer(new BaseballAnswer());
     }
 
-    public Result[] checkAnswer(int[] input) {
+    public GameResult[] checkAnswer(int[] input) {
         return this.getAnswer().calcResult(input);
     }
 }
@@ -75,7 +74,7 @@ class BaseballAnswer {
         @return 해시셋에 포함되지 않으면서 1~9 범위의 정수를 반환합니다.
          */
         int num = Randoms.pickNumberInRange(Config.MIN_NUM, Config.MAX_NUM);
-        if (IntStream.of(arr).anyMatch(x -> x == num)) {
+        if (Utils.intAnyMatch(arr, num)) {
             return getUniqueNumberNotIn(arr);
         }
         return num;
@@ -115,20 +114,20 @@ class BaseballAnswer {
         return this.getAnswer()[index] == num;
     }
 
-    private Result getRowResult(int index, int num) {
+    private GameResult getRowResult(int index, int num) {
         if (this.isStrike(index, num)) {
-            return Result.STRIKE;
+            return GameResult.STRIKE;
         } else if (this.isBall(num)) {
-            return Result.BALL;
+            return GameResult.BALL;
         }
-        return Result.NOTHING;
+        return GameResult.NOTHING;
     }
 
-    public Result[] calcResult(int[] input) {
-        Result[] result = new Result[Config.GAME_COUNT];
+    public GameResult[] calcResult(int[] input) {
+        GameResult[] gameResult = new GameResult[Config.GAME_COUNT];
         for (int i = 0; i < Config.GAME_COUNT; i++) {
-            result[i] = this.getRowResult(i, input[i]);
+            gameResult[i] = this.getRowResult(i, input[i]);
         }
-        return result;
+        return gameResult;
     }
 }

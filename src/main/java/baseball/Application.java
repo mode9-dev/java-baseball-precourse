@@ -1,26 +1,25 @@
 package baseball;
 
-import java.util.Arrays;
-
 import static camp.nextstep.edu.missionutils.Console.readLine;
 
 public class Application {
+    public static boolean handleGameSuccess(GameBrokerController controller) {
+        GameConsoleView.printSuccessMessage();
+        GameConsoleView.printContinueAskInput();
+        String continueOption = readLine();
+        boolean willContinue = controller.willContinue(continueOption);
+        GameBotModel.getInstance().setCompleted(willContinue);
+        return willContinue;
+    }
     public static boolean trySingleGame(GameBrokerController controller) {
+        boolean willContinue = false;
         GameConsoleView.printInputRequired();
         String input = readLine();
-        Result[] result = controller.run(input);
-        GameConsoleView.printInputResult(result);
-        boolean willContinue = false;
-
-        boolean allStrikes = Arrays.stream(result).allMatch(x -> x == Result.STRIKE);
+        GameResult[] gameResult = controller.run(input);
+        GameConsoleView.printInputResult(gameResult);
+        boolean allStrikes = GameResult.allMatch(gameResult, GameResult.STRIKE);
         if (allStrikes) {
-            GameConsoleView.printSuccessMessage();
-            GameConsoleView.printContinueAskInput();
-            String continueOption = readLine();
-            willContinue = controller.willContinue(continueOption);
-        }
-        if (willContinue) {
-            GameBotModel.getInstance().initialize();
+            willContinue = handleGameSuccess(controller);
         }
         return !allStrikes || willContinue;
     }

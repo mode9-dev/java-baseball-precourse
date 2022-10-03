@@ -28,4 +28,11 @@ public class GameBrokerControllerTest {
                 .contains(5);
 
     }
+
+    @Test
+    void 게임_성공후_종료_확인() {
+        GameBrokerController broker = new GameBrokerController();
+        assertThat(broker.willContinue("1")).isTrue();
+        assertThat(broker.willContinue("2")).isFalse();
+    }
 }
