@@ -2,22 +2,20 @@ package baseball;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GameBotTest {
+public class GameBotModelTest {
 
     @Test
     void 랜덤_정답_생성() {
-        GameBot bot = new GameBot();
-        HashSet<Integer> answer = bot.generateRandomDistinctAnswer();
+        GameBotModel bot = new GameBotModel();
+        bot.generateRandomDistinctAnswer();
         int ANSWER_SIZE = 3;
 
-        assertThat(answer)
-                .satisfies(arrAnswer -> {
-                   assertThat(arrAnswer.size()).isEqualTo(ANSWER_SIZE);
-                    for (int num : arrAnswer) {
+        assertThat(bot.getAnswer())
+                .satisfies(answer -> {
+                   assertThat(answer.size()).isEqualTo(ANSWER_SIZE);
+                    for (int num : answer) {
                         assertThat(num)
                                 .isNotNull()
                                 .isPositive()
